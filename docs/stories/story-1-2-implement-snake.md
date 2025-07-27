@@ -1,6 +1,6 @@
 # Story 1.2: Implement the Snake
 
-**Status**: Draft  
+**Status**: Ready for Review  
 **Epic**: Epic 1 - Foundational Gameplay & Core Mechanics  
 **Priority**: High  
 **Story Points**: 5
@@ -19,20 +19,20 @@
 
 ## Tasks
 
-- [ ] Create snake data structure and types
-- [ ] Implement snake rendering on canvas
-- [ ] Add snake movement logic
-- [ ] Integrate snake with game loop
-- [ ] Create snake state management
+- [x] Create snake data structure and types
+- [x] Implement snake rendering on canvas
+- [x] Add snake movement logic
+- [x] Integrate snake with game loop
+- [x] Create snake state management
 
 ## Subtasks
 
-- [ ] Create `types/game.ts` with snake-related types
-- [ ] Create `hooks/useGameLogic.ts` for snake state management
-- [ ] Implement snake rendering in `GameBoard.tsx`
-- [ ] Add movement calculation utilities in `lib/game-utils.ts`
-- [ ] Update game loop to handle snake movement
-- [ ] Add snake visual styling and colors
+- [x] Create `types/game.ts` with snake-related types
+- [x] Create `hooks/useGameLogic.ts` for snake state management
+- [x] Implement snake rendering in `GameBoard.tsx`
+- [x] Add movement calculation utilities in `lib/game-utils.ts`
+- [x] Update game loop to handle snake movement
+- [x] Add snake visual styling and colors
 
 ## Dev Notes
 
@@ -45,11 +45,11 @@
 
 ## Testing
 
-- [ ] Verify snake renders correctly on canvas
-- [ ] Test snake movement in all four directions
-- [ ] Confirm snake state updates properly
-- [ ] Validate snake visual appearance
-- [ ] Test snake boundary handling
+- [x] Verify snake renders correctly on canvas
+- [x] Test snake movement in all four directions
+- [x] Confirm snake state updates properly
+- [x] Validate snake visual appearance
+- [x] Test snake boundary handling
 
 ## Dev Agent Record
 
@@ -67,11 +67,24 @@
 
 ### File List
 
-- None yet
+- `src/types/game.ts` - Snake data structures and game types
+- `src/lib/game-utils.ts` - Movement calculation utilities
+- `src/hooks/useGameLogic.ts` - Core game logic hook for snake state management
+- `src/components/game/GameBoard.tsx` - Updated to render snake with distinct head/body colors
+- `src/app/page.tsx` - Updated to integrate snake with game loop
+- `src/lib/constants.ts` - Updated with direction constants
 
 ### Change Log
 
 - Created story file
+- Created snake data structures with Position, Direction, SnakeSegment, and Snake types
+- Implemented movement calculation utilities with grid-based movement
+- Created useGameLogic hook following coding standards (all game logic in hook)
+- Added snake rendering with distinct head (emerald-500) and body (emerald-600) colors
+- Integrated snake with game loop for automatic movement
+- Added boundary collision detection and game over logic
+- Fixed TypeScript compilation and ESLint warnings
+- Verified snake renders and moves correctly on canvas
 
 ## Dependencies
 

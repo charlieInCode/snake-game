@@ -2,12 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import { GAME_CONFIG } from "@/lib/constants";
+import { Snake } from "@/types/game";
 
 interface GameBoardProps {
   onCanvasReady?: (canvas: HTMLCanvasElement) => void;
+  snake?: Snake;
 }
 
-export default function GameBoard({ onCanvasReady }: GameBoardProps) {
+export default function GameBoard({ onCanvasReady, snake }: GameBoardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -46,11 +48,46 @@ export default function GameBoard({ onCanvasReady }: GameBoardProps) {
       ctx.stroke();
     }
 
+    // Draw snake if provided
+    if (snake) {
+      snake.segments.forEach((segment) => {
+        const x = segment.position.x * GAME_CONFIG.CELL_SIZE;
+        const y = segment.position.y * GAME_CONFIG.CELL_SIZE;
+        const size = GAME_CONFIG.CELL_SIZE;
+
+        // Choose color based on whether it's the head or body
+        if (segment.isHead) {
+          ctx.fillStyle = "#10B981"; // emerald-500 for head
+        } else {
+          ctx.fillStyle = "#059669"; // emerald-600 for body
+        }
+
+        // Draw snake segment with some padding
+        const padding = 1;
+        ctx.fillRect(
+          x + padding,
+          y + padding,
+          size - padding * 2,
+          size - padding * 2
+        );
+
+        // Add a border for better visibility
+        ctx.strokeStyle = "#047857"; // emerald-700
+        ctx.lineWidth = 1;
+        ctx.strokeRect(
+          x + padding,
+          y + padding,
+          size - padding * 2,
+          size - padding * 2
+        );
+      });
+    }
+
     // Notify parent that canvas is ready
     if (onCanvasReady) {
       onCanvasReady(canvas);
     }
-  }, [onCanvasReady]);
+  }, [onCanvasReady, snake]);
 
   return (
     <div className="flex justify-center items-center p-4">

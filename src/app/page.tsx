@@ -3,11 +3,15 @@
 import { useCallback, useRef, useState } from "react";
 import GameBoard from "@/components/game/GameBoard";
 import { useGameLoop } from "@/hooks/useGameLoop";
+import { useGameLogic } from "@/hooks/useGameLogic";
 import { GAME_CONFIG } from "@/lib/constants";
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [frameCount, setFrameCount] = useState(0);
+
+  // Use game logic hook
+  const { moveSnakeOnTick, getSnake, getScore, getIsGameOver } = useGameLogic();
 
   const handleCanvasReady = useCallback((canvas: HTMLCanvasElement) => {
     canvasRef.current = canvas;
@@ -16,42 +20,12 @@ export default function Home() {
   const handleGameTick = useCallback(() => {
     setFrameCount((prev) => prev + 1);
 
-    // For now, just clear and redraw the canvas
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Clear the canvas
-    ctx.fillStyle = GAME_CONFIG.GRID_BACKGROUND_COLOR;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Redraw the grid
-    ctx.strokeStyle = GAME_CONFIG.GRID_COLOR;
-    ctx.lineWidth = GAME_CONFIG.GRID_LINE_WIDTH;
-
-    const canvasSize = GAME_CONFIG.GRID_SIZE * GAME_CONFIG.CELL_SIZE;
-
-    // Draw vertical lines
-    for (let x = 0; x <= GAME_CONFIG.GRID_SIZE; x++) {
-      ctx.beginPath();
-      ctx.moveTo(x * GAME_CONFIG.CELL_SIZE, 0);
-      ctx.lineTo(x * GAME_CONFIG.CELL_SIZE, canvasSize);
-      ctx.stroke();
-    }
-
-    // Draw horizontal lines
-    for (let y = 0; y <= GAME_CONFIG.GRID_SIZE; y++) {
-      ctx.beginPath();
-      ctx.moveTo(0, y * GAME_CONFIG.CELL_SIZE);
-      ctx.lineTo(canvasSize, y * GAME_CONFIG.CELL_SIZE);
-      ctx.stroke();
-    }
-  }, []);
+    // Move the snake
+    moveSnakeOnTick();
+  }, [moveSnakeOnTick]);
 
   useGameLoop({
-    isRunning: true,
+    isRunning: !getIsGameOver(),
     onTick: handleGameTick,
     speed: GAME_CONFIG.GAME_SPEED,
   });
@@ -70,11 +44,20 @@ export default function Home() {
               Frame Count: {frameCount} | FPS: ~
               {Math.round(1000 / GAME_CONFIG.GAME_SPEED)}
             </p>
+            <p className="text-sm text-gray-400">
+              Score: {getScore()} | Snake Length: {getSnake().segments.length}
+            </p>
+            {getIsGameOver() && (
+              <p className="text-red-400 font-bold">Game Over!</p>
+            )}
           </div>
 
-          <GameBoard onCanvasReady={handleCanvasReady} />
+          <GameBoard onCanvasReady={handleCanvasReady} snake={getSnake()} />
 
           <div className="mt-8 text-center">
+            <p className="text-sm text-gray-500">
+              Snake is moving automatically to the right
+            </p>
             <p className="text-sm text-gray-500">
               Game loop is running at{" "}
               {Math.round(1000 / GAME_CONFIG.GAME_SPEED)} FPS
