@@ -1,4 +1,4 @@
-import { Position, Direction, SnakeSegment, Snake } from "@/types/game";
+import { Position, Direction, SnakeSegment, Snake, Food } from "@/types/game";
 import { DIRECTIONS } from "@/lib/constants";
 
 // Wrap position to opposite side when hitting boundaries
@@ -115,4 +115,51 @@ export function getSnakeHead(snake: Snake): Position {
 // Get snake tail position
 export function getSnakeTail(snake: Snake): Position {
   return snake.segments[snake.segments.length - 1].position;
+}
+
+// Check if snake head collides with food
+export function checkFoodCollision(snake: Snake, food: Food): boolean {
+  const head = getSnakeHead(snake);
+  return head.x === food.position.x && head.y === food.position.y;
+}
+
+// Generate random food position that doesn't collide with snake
+export function generateFoodPosition(snake: Snake, gridSize: number): Position {
+  let position: Position;
+  let attempts = 0;
+  const maxAttempts = gridSize * gridSize; // Prevent infinite loop
+
+  do {
+    position = {
+      x: Math.floor(Math.random() * gridSize),
+      y: Math.floor(Math.random() * gridSize),
+    };
+    attempts++;
+  } while (
+    isPositionCollidingWithSnake(position, snake) &&
+    attempts < maxAttempts
+  );
+
+  return position;
+}
+
+// Create food at a safe position
+export function createFood(snake: Snake, gridSize: number): Food {
+  return {
+    position: generateFoodPosition(snake, gridSize),
+  };
+}
+
+// Grow snake by adding a segment at the tail
+export function growSnake(snake: Snake): Snake {
+  const tail = getSnakeTail(snake);
+  const newTailSegment: SnakeSegment = {
+    position: { ...tail },
+    isHead: false,
+  };
+
+  return {
+    ...snake,
+    segments: [...snake.segments, newTailSegment],
+  };
 }

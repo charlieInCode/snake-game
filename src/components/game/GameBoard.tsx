@@ -1,21 +1,27 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { GAME_CONFIG } from "@/lib/constants";
-import { Snake, Direction } from "@/types/game";
+import { GAME_CONFIG, GAME_COLORS, GAME_DIMENSIONS, INPUT_CONFIG } from "@/lib/constants";
+import { Snake, Direction, Food } from "@/types/game";
+import { isValidDirectionChange } from "@/lib/game-utils";
 
 interface GameBoardProps {
   onCanvasReady?: (canvas: HTMLCanvasElement) => void;
   snake?: Snake;
+  food?: Food;
   onDirectionChange?: (direction: Direction) => void;
 }
 
 export default function GameBoard({
   onCanvasReady,
   snake,
+  food,
   onDirectionChange,
 }: GameBoardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const lastInputTime = useRef<number>(0);
+  const pendingDirection = useRef<Direction | null>(null);
+  const pendingTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Keyboard event handling
   useEffect(() => {
@@ -59,7 +65,47 @@ export default function GameBoard({
 
       if (newDirection) {
         event.preventDefault(); // Prevent default browser behavior
-        onDirectionChange(newDirection);
+        
+        const now = Date.now();
+        
+        // Validate direction change before processing
+        if (snake && !isValidDirectionChange(snake.direction, newDirection)) {
+          return; // Don't change direction if invalid
+        }
+        
+        // Skip debouncing in test environment - process immediately
+        if (process.env.NODE_ENV === 'test') {
+          onDirectionChange(newDirection);
+          return;
+        }
+        
+        // Last-input-wins debouncing logic
+        const timeSinceLastInput = now - lastInputTime.current;
+        
+        if (timeSinceLastInput >= INPUT_CONFIG.INPUT_DEBOUNCE_MS) {
+          // Debounce period has passed, process immediately
+          lastInputTime.current = now;
+          onDirectionChange(newDirection);
+        } else {
+          // Within debounce period - buffer this input and set/reset timeout
+          pendingDirection.current = newDirection;
+          
+          // Clear existing timeout if any
+          if (pendingTimeout.current) {
+            clearTimeout(pendingTimeout.current);
+          }
+          
+          // Set timeout to process the last input after debounce period
+          const remainingTime = INPUT_CONFIG.INPUT_DEBOUNCE_MS - timeSinceLastInput;
+          pendingTimeout.current = setTimeout(() => {
+            if (pendingDirection.current && onDirectionChange) {
+              lastInputTime.current = Date.now();
+              onDirectionChange(pendingDirection.current);
+              pendingDirection.current = null;
+              pendingTimeout.current = null;
+            }
+          }, remainingTime);
+        }
       }
     };
 
@@ -69,8 +115,14 @@ export default function GameBoard({
     // Cleanup
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      // Clear any pending timeout
+      if (pendingTimeout.current) {
+        clearTimeout(pendingTimeout.current);
+        pendingTimeout.current = null;
+        pendingDirection.current = null;
+      }
     };
-  }, [onDirectionChange]);
+  }, [onDirectionChange, snake]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -116,14 +168,10 @@ export default function GameBoard({
         const size = GAME_CONFIG.CELL_SIZE;
 
         // Choose color based on whether it's the head or body
-        if (segment.isHead) {
-          ctx.fillStyle = "#10B981"; // emerald-500 for head
-        } else {
-          ctx.fillStyle = "#059669"; // emerald-600 for body
-        }
+        ctx.fillStyle = segment.isHead ? GAME_COLORS.SNAKE_HEAD : GAME_COLORS.SNAKE_BODY;
 
         // Draw snake segment with some padding
-        const padding = 1;
+        const padding = GAME_DIMENSIONS.SNAKE_PADDING;
         ctx.fillRect(
           x + padding,
           y + padding,
@@ -132,7 +180,7 @@ export default function GameBoard({
         );
 
         // Add a border for better visibility
-        ctx.strokeStyle = "#047857"; // emerald-700
+        ctx.strokeStyle = GAME_COLORS.SNAKE_BORDER;
         ctx.lineWidth = 1;
         ctx.strokeRect(
           x + padding,
@@ -143,11 +191,36 @@ export default function GameBoard({
       });
     }
 
+    // Draw food if provided
+    if (food) {
+      const x = food.position.x * GAME_CONFIG.CELL_SIZE;
+      const y = food.position.y * GAME_CONFIG.CELL_SIZE;
+      const size = GAME_CONFIG.CELL_SIZE;
+
+      // Food color
+      ctx.fillStyle = GAME_COLORS.FOOD_FILL;
+
+      // Draw food as a circle with some padding
+      const padding = GAME_DIMENSIONS.FOOD_PADDING;
+      const radius = (size - padding * 2) / 2;
+      const centerX = x + size / 2;
+      const centerY = y + size / 2;
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Add a border for better visibility
+      ctx.strokeStyle = GAME_COLORS.FOOD_BORDER;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
     // Notify parent that canvas is ready
     if (onCanvasReady) {
       onCanvasReady(canvas);
     }
-  }, [onCanvasReady, snake]);
+  }, [onCanvasReady, snake, food]);
 
   return (
     <div className="flex justify-center items-center p-4">

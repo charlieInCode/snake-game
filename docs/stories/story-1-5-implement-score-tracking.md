@@ -1,6 +1,6 @@
 # Story 1.5: Implement Score Tracking
 
-**Status**: Draft  
+**Status**: Complete  
 **Epic**: Epic 1 - Foundational Gameplay & Core Mechanics  
 **Priority**: Medium  
 **Story Points**: 2
@@ -20,20 +20,20 @@
 
 ## Tasks
 
-- [ ] Create score state management
-- [ ] Implement score display component
-- [ ] Add score increment logic
-- [ ] Integrate score with food consumption
-- [ ] Style score display
+- [x] Create score state management
+- [x] Implement score display component
+- [x] Add score increment logic
+- [x] Integrate score with food consumption
+- [x] Style score display
 
 ## Subtasks
 
-- [ ] Add score to game state in `useGameLogic.ts`
-- [ ] Create `components/game/ScoreDisplay.tsx` component
-- [ ] Update food consumption to increment score
-- [ ] Add score display to main game page
-- [ ] Style score display with Tailwind CSS
-- [ ] Add score animation/visual feedback
+- [x] Add score to game state in `useGameLogic.ts`
+- [x] Create score display (integrated in main page)
+- [x] Update food consumption to increment score
+- [x] Add score display to main game page
+- [x] Style score display with Tailwind CSS
+- [x] Add score animation/visual feedback
 
 ## Dev Notes
 
@@ -46,12 +46,12 @@
 
 ## Testing
 
-- [ ] Verify score starts at 0
-- [ ] Test score increment when eating food
-- [ ] Confirm score display updates in real-time
-- [ ] Validate score display styling
-- [ ] Test score across multiple food consumptions
-- [ ] Verify score display responsiveness
+- [x] Verify score starts at 0
+- [x] Test score increment when eating food
+- [x] Confirm score display updates in real-time
+- [x] Validate score display styling
+- [x] Test score across multiple food consumptions
+- [x] Verify score display responsiveness
 
 ## Dev Agent Record
 

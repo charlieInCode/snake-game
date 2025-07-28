@@ -22,6 +22,7 @@ export interface Snake {
 // Game state type
 export interface GameState {
   snake: Snake;
+  food: Food;
   score: number;
   isGameOver: boolean;
 }
@@ -34,8 +35,18 @@ export interface GameConfig {
   gameSpeed: number;
 }
 
+// Food type
+export interface Food {
+  position: Position;
+}
+
 // Colors for snake rendering
 export interface SnakeColors {
   head: string;
   body: string;
+}
+
+// Food colors
+export interface FoodColors {
+  color: string;
 }

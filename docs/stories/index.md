@@ -37,10 +37,16 @@ This directory contains all development stories for the Snake Game project, orga
    - Add food mechanics and snake growth
 
 5. **[Story 1.5: Implement Score Tracking](story-1-5-implement-score-tracking.md)**
-   - Status: Draft
+   - Status: Complete
    - Story Points: 2
    - Priority: Medium
    - Add score display and tracking
+
+6. **[Story 1.6: Separate Game Speed and Snake Speed](story-1-6-separate-game-snake-speed.md)**
+   - Status: Draft
+   - Story Points: 3
+   - Priority: Medium
+   - Decouple game loop timing from snake movement speed
 
 ## Epic 2: Full Game Experience & Responsive UI
 
@@ -48,32 +54,32 @@ This directory contains all development stories for the Snake Game project, orga
 
 ### Stories
 
-6. **[Story 2.1: Implement Game State Screens](story-2-1-game-state-screens.md)**
+7. **[Story 2.1: Implement Game State Screens](story-2-1-game-state-screens.md)**
 
    - Status: Draft
    - Story Points: 5
    - Priority: High
    - Create start and game over screens
 
-7. **[Story 2.2: Implement Game State Logic](story-2-2-game-state-logic.md)**
+8. **[Story 2.2: Implement Game State Logic](story-2-2-game-state-logic.md)**
 
    - Status: Draft
    - Story Points: 5
    - Priority: High
    - Add game state management (start, pause, game over)
 
-8. **[Story 2.3: Implement Responsive UI Layout](story-2-3-responsive-ui-layout.md)**
+9. **[Story 2.3: Implement Responsive UI Layout](story-2-3-responsive-ui-layout.md)**
 
    - Status: Draft
    - Story Points: 4
    - Priority: Medium
    - Make UI responsive across devices
 
-9. **[Story 2.4: Add Mobile Touch Controls](story-2-4-mobile-touch-controls.md)**
-   - Status: Draft
-   - Story Points: 4
-   - Priority: Medium
-   - Implement touch controls for mobile
+10. **[Story 2.4: Add Mobile Touch Controls](story-2-4-mobile-touch-controls.md)**
+    - Status: Draft
+    - Story Points: 4
+    - Priority: Medium
+    - Implement touch controls for mobile
 
 ## Epic 3: Persistent Leaderboard & Final Polish
 
@@ -81,21 +87,21 @@ This directory contains all development stories for the Snake Game project, orga
 
 ### Stories
 
-10. **[Story 3.1: Save High Score to Local Storage](story-3-1-save-high-score.md)**
+11. **[Story 3.1: Save High Score to Local Storage](story-3-1-save-high-score.md)**
 
     - Status: Draft
     - Story Points: 3
     - Priority: High
     - Implement Local Storage for high scores
 
-11. **[Story 3.2: Read and Display Leaderboard](story-3-2-display-leaderboard.md)**
+12. **[Story 3.2: Read and Display Leaderboard](story-3-2-display-leaderboard.md)**
 
     - Status: Draft
     - Story Points: 3
     - Priority: Medium
     - Display leaderboard on start and game over screens
 
-12. **[Story 3.3: Final Polish and Refinement](story-3-3-final-polish.md)**
+13. **[Story 3.3: Final Polish and Refinement](story-3-3-final-polish.md)**
     - Status: Draft
     - Story Points: 5
     - Priority: Medium
@@ -108,9 +114,9 @@ This directory contains all development stories for the Snake Game project, orga
 - **Ready for Review**: Implementation complete, ready for review
 - **Complete**: Story finished and approved
 
-## Total Story Points: 47
+## Total Story Points: 50
 
-- Epic 1: 18 points
+- Epic 1: 21 points
 - Epic 2: 18 points
 - Epic 3: 11 points
 

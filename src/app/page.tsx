@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import GameBoard from "@/components/game/GameBoard";
 import { useGameLoop } from "@/hooks/useGameLoop";
 import { useGameLogic } from "@/hooks/useGameLogic";
-import { GAME_CONFIG } from "@/lib/constants";
+import { GAME_CONFIG, INPUT_CONFIG } from "@/lib/constants";
 import { Direction } from "@/types/game";
 
 export default function Home() {
@@ -13,8 +13,10 @@ export default function Home() {
 
   // Use game logic hook
   const {
+    onGameTick,
     moveSnakeOnTick,
     getSnake,
+    getFood,
     getScore,
     getIsGameOver,
     updateSnakeDirection,
@@ -33,15 +35,19 @@ export default function Home() {
 
   const handleGameTick = useCallback(() => {
     setFrameCount((prev) => prev + 1);
+    onGameTick();
+  }, [onGameTick]);
 
-    // Move the snake
+  const handleSnakeMove = useCallback(() => {
     moveSnakeOnTick();
   }, [moveSnakeOnTick]);
 
   useGameLoop({
     isRunning: !getIsGameOver(),
     onTick: handleGameTick,
-    speed: GAME_CONFIG.GAME_SPEED,
+    onSnakeMove: handleSnakeMove,
+    gameSpeed: GAME_CONFIG.GAME_SPEED,
+    snakeSpeed: GAME_CONFIG.SNAKE_SPEED,
   });
 
   return (
@@ -55,11 +61,20 @@ export default function Home() {
         <main className="flex flex-col items-center">
           <div className="mb-4 text-center">
             <p className="text-sm text-gray-400">
-              Frame Count: {frameCount} | FPS: ~
-              {Math.round(1000 / GAME_CONFIG.GAME_SPEED)}
+              Game Ticks: {frameCount} | Visual Updates: ~
+              {Math.round(1000 / GAME_CONFIG.GAME_SPEED)} FPS
             </p>
             <p className="text-sm text-gray-400">
               Score: {getScore()} | Snake Length: {getSnake().segments.length}
+            </p>
+            <p className="text-sm text-gray-400">
+              Snake Speed: ~{Math.round(1000 / GAME_CONFIG.SNAKE_SPEED)}{" "}
+              moves/sec
+            </p>
+            <p className="text-sm text-gray-500">
+              Input Debounce: {INPUT_CONFIG.INPUT_DEBOUNCE_MS}ms | Game Loop:{" "}
+              {GAME_CONFIG.GAME_SPEED}ms | Snake Move: {GAME_CONFIG.SNAKE_SPEED}
+              ms
             </p>
             {getIsGameOver() && (
               <p className="text-red-400 font-bold">Game Over!</p>
@@ -69,6 +84,7 @@ export default function Home() {
           <GameBoard
             onCanvasReady={handleCanvasReady}
             snake={getSnake()}
+            food={getFood()}
             onDirectionChange={handleDirectionChange}
           />
 
@@ -77,8 +93,10 @@ export default function Home() {
               Use Arrow Keys or WASD to control the snake
             </p>
             <p className="text-sm text-gray-500">
-              Game loop is running at{" "}
-              {Math.round(1000 / GAME_CONFIG.GAME_SPEED)} FPS
+              Visual updates: {GAME_CONFIG.GAME_SPEED}ms (~
+              {Math.round(1000 / GAME_CONFIG.GAME_SPEED)} FPS) | Snake moves:{" "}
+              {GAME_CONFIG.SNAKE_SPEED}ms (~
+              {Math.round(1000 / GAME_CONFIG.SNAKE_SPEED)} moves/sec)
             </p>
           </div>
         </main>
