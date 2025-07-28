@@ -74,12 +74,12 @@ export function moveSnake(snake: Snake, gridSize: number): Snake {
   const head = snake.segments[0];
   const newHeadPosition = calculateNewPosition(head.position, snake.direction);
 
-  // Wrap position if it goes out of bounds
-  const wrappedHeadPosition = wrapPosition(newHeadPosition, gridSize);
+  // Use wall wrapping as per Story 1.3 requirements
+  const headPosition = wrapPosition(newHeadPosition, gridSize);
 
   // Create new head segment
   const newHead: SnakeSegment = {
-    position: wrappedHeadPosition,
+    position: headPosition,
     isHead: true,
   };
 
@@ -150,16 +150,38 @@ export function createFood(snake: Snake, gridSize: number): Food {
   };
 }
 
-// Grow snake by adding a segment at the tail
+// Grow snake by adding 2 segments at the tail
 export function growSnake(snake: Snake): Snake {
   const tail = getSnakeTail(snake);
-  const newTailSegment: SnakeSegment = {
+  const newTailSegment1: SnakeSegment = {
+    position: { ...tail },
+    isHead: false,
+  };
+  const newTailSegment2: SnakeSegment = {
     position: { ...tail },
     isHead: false,
   };
 
   return {
     ...snake,
-    segments: [...snake.segments, newTailSegment],
+    segments: [...snake.segments, newTailSegment1, newTailSegment2],
   };
+}
+
+// Check if snake head collides with walls
+export function checkWallCollision(snake: Snake, gridSize: number): boolean {
+  const head = getSnakeHead(snake);
+  return !isPositionInBounds(head, gridSize);
+}
+
+// Check if snake head collides with its own body
+export function checkSelfCollision(snake: Snake): boolean {
+  const head = getSnakeHead(snake);
+  // Check collision with all body segments (skip the head itself)
+  return snake.segments
+    .slice(1)
+    .some(
+      (segment) =>
+        segment.position.x === head.x && segment.position.y === head.y
+    );
 }

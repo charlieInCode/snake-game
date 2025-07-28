@@ -7,6 +7,9 @@ export interface Position {
 // Direction type for snake movement
 export type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
 
+// Game screen states
+export type GameScreenState = "start" | "playing" | "paused" | "game-over";
+
 // Snake segment type
 export interface SnakeSegment {
   position: Position;
@@ -25,6 +28,7 @@ export interface GameState {
   food: Food;
   score: number;
   isGameOver: boolean;
+  screenState: GameScreenState;
 }
 
 // Game configuration type

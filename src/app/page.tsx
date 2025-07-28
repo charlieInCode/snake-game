@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, useEffect } from "react";
 import GameBoard from "@/components/game/GameBoard";
+import StartScreen from "@/components/game/StartScreen";
+import GameOverScreen from "@/components/game/GameOverScreen";
 import { useGameLoop } from "@/hooks/useGameLoop";
 import { useGameLogic } from "@/hooks/useGameLogic";
 import { GAME_CONFIG, INPUT_CONFIG } from "@/lib/constants";
@@ -18,8 +20,10 @@ export default function Home() {
     getSnake,
     getFood,
     getScore,
-    getIsGameOver,
+    getScreenState,
     updateSnakeDirection,
+    startGame,
+    resetGame,
   } = useGameLogic();
 
   const handleCanvasReady = useCallback((canvas: HTMLCanvasElement) => {
@@ -42,14 +46,48 @@ export default function Home() {
     moveSnakeOnTick();
   }, [moveSnakeOnTick]);
 
+  const handleStartGame = useCallback(() => {
+    startGame();
+  }, [startGame]);
+
+  const handleRestartGame = useCallback(() => {
+    resetGame();
+  }, [resetGame]);
+
+  // Handle keyboard events for game over screen
+  useEffect(() => {
+    const handleKeyDown = () => {
+      if (getScreenState() === "game-over") {
+        handleRestartGame();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [getScreenState, handleRestartGame]);
+
   useGameLoop({
-    isRunning: !getIsGameOver(),
+    isRunning: getScreenState() === "playing",
     onTick: handleGameTick,
     onSnakeMove: handleSnakeMove,
     gameSpeed: GAME_CONFIG.GAME_SPEED,
     snakeSpeed: GAME_CONFIG.SNAKE_SPEED,
   });
 
+  const screenState = getScreenState();
+
+  // Render appropriate screen based on game state
+  if (screenState === "start") {
+    return <StartScreen onStartGame={handleStartGame} />;
+  }
+
+  if (screenState === "game-over") {
+    return (
+      <GameOverScreen finalScore={getScore()} onRestart={handleRestartGame} />
+    );
+  }
+
+  // Main game screen (playing or paused)
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-8">
@@ -76,8 +114,8 @@ export default function Home() {
               {GAME_CONFIG.GAME_SPEED}ms | Snake Move: {GAME_CONFIG.SNAKE_SPEED}
               ms
             </p>
-            {getIsGameOver() && (
-              <p className="text-red-400 font-bold">Game Over!</p>
+            {screenState === "paused" && (
+              <p className="text-yellow-400 font-bold">Game Paused</p>
             )}
           </div>
 

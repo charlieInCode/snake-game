@@ -62,7 +62,7 @@ export function useGameLoop({
 
       frameRef.current = requestAnimationFrame((time) => gameLoop(time));
     },
-    [isRunning, onTick, onSnakeMove, gameSpeed, snakeSpeed]
+    [isRunning, onTick, onSnakeMove, validatedGameSpeed, validatedSnakeSpeed]
   );
 
   useEffect(() => {

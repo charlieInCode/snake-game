@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import GameBoard from "../GameBoard";
 import { Snake, Direction, Food } from "@/types/game";
 import { GAME_CONFIG } from "@/lib/constants";
@@ -19,11 +19,7 @@ const mockContext = {
   fill: jest.fn(),
 };
 
-const mockCanvas = {
-  getContext: jest.fn(() => mockContext),
-  width: 0,
-  height: 0,
-};
+// Canvas mock setup for HTMLCanvasElement
 
 // Mock HTMLCanvasElement
 Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {

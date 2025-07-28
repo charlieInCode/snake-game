@@ -1,6 +1,6 @@
 # Story 1.4: Implement Food and Snake Growth
 
-**Status**: Done  
+**Status**: Complete  
 **Epic**: Epic 1 - Foundational Gameplay & Core Mechanics  
 **Priority**: High  
 **Story Points**: 5

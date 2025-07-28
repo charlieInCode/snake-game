@@ -10,28 +10,28 @@ This directory contains all development stories for the Snake Game project, orga
 
 1. **[Story 1.1: Set Up Project and Game Canvas](story-1-1-setup-project-game-canvas.md)**
 
-   - Status: Draft
+   - Status: Complete
    - Story Points: 3
    - Priority: High
    - Initialize Next.js project with TypeScript and Tailwind CSS, create game canvas
 
 2. **[Story 1.2: Implement the Snake](story-1-2-implement-snake.md)**
 
-   - Status: Draft
+   - Status: Complete
    - Story Points: 5
    - Priority: High
    - Create snake character with automatic movement
 
 3. **[Story 1.3: Add Player Controls](story-1-3-add-player-controls.md)**
 
-   - Status: Draft
+   - Status: Complete
    - Story Points: 3
    - Priority: High
    - Implement keyboard controls (Arrow Keys/WASD)
 
 4. **[Story 1.4: Implement Food and Snake Growth](story-1-4-implement-food-growth.md)**
 
-   - Status: Draft
+   - Status: Complete
    - Story Points: 5
    - Priority: High
    - Add food mechanics and snake growth
@@ -43,7 +43,7 @@ This directory contains all development stories for the Snake Game project, orga
    - Add score display and tracking
 
 6. **[Story 1.6: Separate Game Speed and Snake Speed](story-1-6-separate-game-snake-speed.md)**
-   - Status: Draft
+   - Status: Complete
    - Story Points: 3
    - Priority: Medium
    - Decouple game loop timing from snake movement speed
@@ -56,7 +56,7 @@ This directory contains all development stories for the Snake Game project, orga
 
 7. **[Story 2.1: Implement Game State Screens](story-2-1-game-state-screens.md)**
 
-   - Status: Draft
+   - Status: Complete
    - Story Points: 5
    - Priority: High
    - Create start and game over screens
@@ -81,27 +81,33 @@ This directory contains all development stories for the Snake Game project, orga
     - Priority: Medium
     - Implement touch controls for mobile
 
+11. **[Story 2.5: Progressive Difficulty Speed Enhancement](story-2-5-progressive-difficulty.md)**
+    - Status: Draft
+    - Story Points: 3
+    - Priority: Medium
+    - Increase snake speed and growth rate based on food consumption
+
 ## Epic 3: Persistent Leaderboard & Final Polish
 
 **Goal**: Add high score persistence and perform final polish for portfolio-quality application.
 
 ### Stories
 
-11. **[Story 3.1: Save High Score to Local Storage](story-3-1-save-high-score.md)**
+12. **[Story 3.1: Save High Score to Local Storage](story-3-1-save-high-score.md)**
 
     - Status: Draft
     - Story Points: 3
     - Priority: High
     - Implement Local Storage for high scores
 
-12. **[Story 3.2: Read and Display Leaderboard](story-3-2-display-leaderboard.md)**
+13. **[Story 3.2: Read and Display Leaderboard](story-3-2-display-leaderboard.md)**
 
     - Status: Draft
     - Story Points: 3
     - Priority: Medium
     - Display leaderboard on start and game over screens
 
-13. **[Story 3.3: Final Polish and Refinement](story-3-3-final-polish.md)**
+14. **[Story 3.3: Final Polish and Refinement](story-3-3-final-polish.md)**
     - Status: Draft
     - Story Points: 5
     - Priority: Medium
@@ -114,10 +120,10 @@ This directory contains all development stories for the Snake Game project, orga
 - **Ready for Review**: Implementation complete, ready for review
 - **Complete**: Story finished and approved
 
-## Total Story Points: 50
+## Total Story Points: 53
 
 - Epic 1: 21 points
-- Epic 2: 18 points
+- Epic 2: 21 points
 - Epic 3: 11 points
 
 ## Development Workflow

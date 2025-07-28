@@ -8,6 +8,7 @@ import {
   createFood,
   checkFoodCollision,
   growSnake,
+  checkSelfCollision,
 } from "@/lib/game-utils";
 
 // Initial game state
@@ -24,6 +25,7 @@ const createInitialGameState = (): GameState => {
     food: initialFood,
     score: SCORE_CONFIG.INITIAL_SCORE,
     isGameOver: false,
+    screenState: "start",
   };
 };
 
@@ -33,6 +35,11 @@ export function useGameLogic() {
   // Update snake direction
   const updateSnakeDirection = useCallback((newDirection: Direction) => {
     setGameState((prevState) => {
+      // Only allow direction changes when playing
+      if (prevState.screenState !== "playing") {
+        return prevState;
+      }
+
       // Use validation utility to check if direction change is valid
       if (!isValidDirectionChange(prevState.snake.direction, newDirection)) {
         return prevState; // Don't change direction if invalid
@@ -48,6 +55,39 @@ export function useGameLogic() {
     });
   }, []);
 
+  // Start game
+  const startGame = useCallback(() => {
+    setGameState((prevState) => ({
+      ...prevState,
+      screenState: "playing",
+    }));
+  }, []);
+
+  // Pause game
+  const pauseGame = useCallback(() => {
+    setGameState((prevState) => ({
+      ...prevState,
+      screenState: "paused",
+    }));
+  }, []);
+
+  // Resume game
+  const resumeGame = useCallback(() => {
+    setGameState((prevState) => ({
+      ...prevState,
+      screenState: "playing",
+    }));
+  }, []);
+
+  // Game over
+  const setGameOver = useCallback(() => {
+    setGameState((prevState) => ({
+      ...prevState,
+      isGameOver: true,
+      screenState: "game-over",
+    }));
+  }, []);
+
   // Game tick (called on each visual update)
   const onGameTick = useCallback(() => {
     // This function is called for visual updates
@@ -57,11 +97,21 @@ export function useGameLogic() {
   // Move snake (called on snake movement intervals)
   const moveSnakeOnTick = useCallback(() => {
     setGameState((prevState) => {
-      if (prevState.isGameOver) {
+      // Only move snake when playing
+      if (prevState.screenState !== "playing") {
         return prevState;
       }
 
       const newSnake = moveSnake(prevState.snake, GAME_CONFIG.GRID_SIZE);
+
+      // Check for self collision (wall wrapping is handled in moveSnake)
+      if (checkSelfCollision(newSnake)) {
+        return {
+          ...prevState,
+          isGameOver: true,
+          screenState: "game-over",
+        };
+      }
 
       // Check for food collision
       const foodCollision = checkFoodCollision(newSnake, prevState.food);
@@ -79,8 +129,6 @@ export function useGameLogic() {
         };
       }
 
-      // Wall wrapping is now handled in moveSnake function
-      // No game over condition for wall collisions
       return {
         ...prevState,
         snake: newSnake,
@@ -113,15 +161,25 @@ export function useGameLogic() {
     return gameState.food;
   }, [gameState.food]);
 
+  // Get current screen state
+  const getScreenState = useCallback(() => {
+    return gameState.screenState;
+  }, [gameState.screenState]);
+
   return {
     gameState,
     updateSnakeDirection,
     onGameTick,
     moveSnakeOnTick,
     resetGame,
+    startGame,
+    pauseGame,
+    resumeGame,
+    setGameOver,
     getSnake,
     getFood,
     getScore,
     getIsGameOver,
+    getScreenState,
   };
 }

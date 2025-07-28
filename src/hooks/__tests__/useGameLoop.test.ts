@@ -1,4 +1,4 @@
-import { renderHook, act } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 import { useGameLoop } from "../useGameLoop";
 
 // Mock requestAnimationFrame
@@ -9,15 +9,7 @@ global.requestAnimationFrame = mockRequestAnimationFrame;
 global.cancelAnimationFrame = mockCancelAnimationFrame;
 
 // Helper to simulate requestAnimationFrame behavior
-const simulateAnimationFrame = (time: number) => {
-  if (mockRequestAnimationFrame.mock.calls.length > 0) {
-    const callback =
-      mockRequestAnimationFrame.mock.calls[
-        mockRequestAnimationFrame.mock.calls.length - 1
-      ][0];
-    callback(time);
-  }
-};
+// Unused in current tests but kept for potential future use
 
 describe("useGameLoop", () => {
   beforeEach(() => {
