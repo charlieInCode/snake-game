@@ -7,8 +7,9 @@ import {
   isPositionCollidingWithSnake,
   getSnakeHead,
   getSnakeTail,
+  wrapPosition,
 } from '../game-utils';
-import { Position, Direction, Snake, SnakeSegment } from '@/types/game';
+import { Position, Snake } from '@/types/game';
 
 describe('Game Utils - Story 1.2', () => {
   describe('calculateNewPosition', () => {
@@ -204,15 +205,15 @@ describe('Game Utils - Story 1.2', () => {
       expect(movedSnake.segments[0].position).toEqual({ x: 9, y: 10 });
     });
 
-    it('should not move when hitting boundary', () => {
-      // Position snake at right edge
+    it('should wrap around when hitting boundary', () => {
+      // Position snake at right edge and move right - should wrap to left side
       testSnake.segments[0].position = { x: 19, y: 10 };
       testSnake.direction = 'RIGHT';
       
       const movedSnake = moveSnake(testSnake, gridSize);
       
-      // Should remain unchanged
-      expect(movedSnake.segments[0].position).toEqual({ x: 19, y: 10 });
+      // Should wrap to x=0
+      expect(movedSnake.segments[0].position).toEqual({ x: 0, y: 10 });
     });
 
     it('should preserve immutability', () => {
@@ -311,6 +312,111 @@ describe('Game Utils - Story 1.2', () => {
 
       const tail = getSnakeTail(testSnake);
       expect(tail).toEqual({ x: 10, y: 10 });
+    });
+  });
+
+  describe('wrapPosition - Story 1.3 Wall Wrapping', () => {
+    const gridSize = 20;
+
+    it('should wrap x position from right edge to left edge', () => {
+      const position: Position = { x: 20, y: 10 };
+      const wrapped = wrapPosition(position, gridSize);
+      
+      expect(wrapped).toEqual({ x: 0, y: 10 });
+    });
+
+    it('should wrap x position from left edge to right edge', () => {
+      const position: Position = { x: -1, y: 10 };
+      const wrapped = wrapPosition(position, gridSize);
+      
+      expect(wrapped).toEqual({ x: 19, y: 10 });
+    });
+
+    it('should wrap y position from bottom edge to top edge', () => {
+      const position: Position = { x: 10, y: 20 };
+      const wrapped = wrapPosition(position, gridSize);
+      
+      expect(wrapped).toEqual({ x: 10, y: 0 });
+    });
+
+    it('should wrap y position from top edge to bottom edge', () => {
+      const position: Position = { x: 10, y: -1 };
+      const wrapped = wrapPosition(position, gridSize);
+      
+      expect(wrapped).toEqual({ x: 10, y: 19 });
+    });
+
+    it('should not change position when within bounds', () => {
+      const position: Position = { x: 10, y: 10 };
+      const wrapped = wrapPosition(position, gridSize);
+      
+      expect(wrapped).toEqual({ x: 10, y: 10 });
+    });
+
+    it('should handle corner wrapping - both x and y out of bounds', () => {
+      const position: Position = { x: -1, y: -1 };
+      const wrapped = wrapPosition(position, gridSize);
+      
+      expect(wrapped).toEqual({ x: 19, y: 19 });
+    });
+
+    it('should handle corner wrapping - positive bounds', () => {
+      const position: Position = { x: 20, y: 20 };
+      const wrapped = wrapPosition(position, gridSize);
+      
+      expect(wrapped).toEqual({ x: 0, y: 0 });
+    });
+  });
+
+  describe('moveSnake with wall wrapping - Story 1.3', () => {
+    const gridSize = 20;
+    let testSnake: Snake;
+
+    beforeEach(() => {
+      testSnake = {
+        segments: [
+          { position: { x: 10, y: 10 }, isHead: true },
+          { position: { x: 9, y: 10 }, isHead: false },
+          { position: { x: 8, y: 10 }, isHead: false },
+        ],
+        direction: 'RIGHT',
+      };
+    });
+
+    it('should wrap from right edge to left edge', () => {
+      testSnake.segments[0].position = { x: 19, y: 10 };
+      testSnake.direction = 'RIGHT';
+      
+      const movedSnake = moveSnake(testSnake, gridSize);
+      
+      expect(movedSnake.segments[0].position).toEqual({ x: 0, y: 10 });
+    });
+
+    it('should wrap from left edge to right edge', () => {
+      testSnake.segments[0].position = { x: 0, y: 10 };
+      testSnake.direction = 'LEFT';
+      
+      const movedSnake = moveSnake(testSnake, gridSize);
+      
+      expect(movedSnake.segments[0].position).toEqual({ x: 19, y: 10 });
+    });
+
+    it('should wrap from bottom edge to top edge', () => {
+      testSnake.segments[0].position = { x: 10, y: 19 };
+      testSnake.direction = 'DOWN';
+      
+      const movedSnake = moveSnake(testSnake, gridSize);
+      
+      expect(movedSnake.segments[0].position).toEqual({ x: 10, y: 0 });
+    });
+
+    it('should wrap from top edge to bottom edge', () => {
+      testSnake.segments[0].position = { x: 10, y: 0 };
+      testSnake.direction = 'UP';
+      
+      const movedSnake = moveSnake(testSnake, gridSize);
+      
+      expect(movedSnake.segments[0].position).toEqual({ x: 10, y: 19 });
     });
   });
 });

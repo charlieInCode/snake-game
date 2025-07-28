@@ -51,21 +51,8 @@ export function useGameLogic() {
 
       const newSnake = moveSnake(prevState.snake, GAME_CONFIG.GRID_SIZE);
 
-      // Check if snake hit the boundary (game over condition)
-      const head = newSnake.segments[0];
-      const isOutOfBounds =
-        head.position.x < 0 ||
-        head.position.x >= GAME_CONFIG.GRID_SIZE ||
-        head.position.y < 0 ||
-        head.position.y >= GAME_CONFIG.GRID_SIZE;
-
-      if (isOutOfBounds) {
-        return {
-          ...prevState,
-          isGameOver: true,
-        };
-      }
-
+      // Wall wrapping is now handled in moveSnake function
+      // No game over condition for wall collisions
       return {
         ...prevState,
         snake: newSnake,

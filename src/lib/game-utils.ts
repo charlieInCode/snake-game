@@ -1,6 +1,14 @@
 import { Position, Direction, SnakeSegment, Snake } from "@/types/game";
 import { DIRECTIONS } from "@/lib/constants";
 
+// Wrap position to opposite side when hitting boundaries
+export function wrapPosition(position: Position, gridSize: number): Position {
+  return {
+    x: position.x < 0 ? gridSize - 1 : position.x >= gridSize ? 0 : position.x,
+    y: position.y < 0 ? gridSize - 1 : position.y >= gridSize ? 0 : position.y,
+  };
+}
+
 // Calculate new position based on current position and direction
 export function calculateNewPosition(
   currentPosition: Position,
@@ -66,14 +74,12 @@ export function moveSnake(snake: Snake, gridSize: number): Snake {
   const head = snake.segments[0];
   const newHeadPosition = calculateNewPosition(head.position, snake.direction);
 
-  // Check if snake hits the boundary
-  if (!isPositionInBounds(newHeadPosition, gridSize)) {
-    return snake; // Don't move if hitting boundary (for now)
-  }
+  // Wrap position if it goes out of bounds
+  const wrappedHeadPosition = wrapPosition(newHeadPosition, gridSize);
 
   // Create new head segment
   const newHead: SnakeSegment = {
-    position: newHeadPosition,
+    position: wrappedHeadPosition,
     isHead: true,
   };
 
