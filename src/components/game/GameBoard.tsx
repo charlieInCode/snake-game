@@ -2,15 +2,75 @@
 
 import { useEffect, useRef } from "react";
 import { GAME_CONFIG } from "@/lib/constants";
-import { Snake } from "@/types/game";
+import { Snake, Direction } from "@/types/game";
 
 interface GameBoardProps {
   onCanvasReady?: (canvas: HTMLCanvasElement) => void;
   snake?: Snake;
+  onDirectionChange?: (direction: Direction) => void;
 }
 
-export default function GameBoard({ onCanvasReady, snake }: GameBoardProps) {
+export default function GameBoard({
+  onCanvasReady,
+  snake,
+  onDirectionChange,
+}: GameBoardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Keyboard event handling
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!onDirectionChange) return;
+
+      let newDirection: Direction | null = null;
+
+      // Arrow keys
+      switch (event.key) {
+        case "ArrowUp":
+          newDirection = "UP";
+          break;
+        case "ArrowDown":
+          newDirection = "DOWN";
+          break;
+        case "ArrowLeft":
+          newDirection = "LEFT";
+          break;
+        case "ArrowRight":
+          newDirection = "RIGHT";
+          break;
+        // WASD keys
+        case "w":
+        case "W":
+          newDirection = "UP";
+          break;
+        case "s":
+        case "S":
+          newDirection = "DOWN";
+          break;
+        case "a":
+        case "A":
+          newDirection = "LEFT";
+          break;
+        case "d":
+        case "D":
+          newDirection = "RIGHT";
+          break;
+      }
+
+      if (newDirection) {
+        event.preventDefault(); // Prevent default browser behavior
+        onDirectionChange(newDirection);
+      }
+    };
+
+    // Add event listener
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onDirectionChange]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -99,6 +159,7 @@ export default function GameBoard({ onCanvasReady, snake }: GameBoardProps) {
           borderColor: GAME_CONFIG.CANVAS_BORDER_COLOR,
           backgroundColor: GAME_CONFIG.GRID_BACKGROUND_COLOR,
         }}
+        tabIndex={0} // Make canvas focusable for keyboard events
       />
     </div>
   );

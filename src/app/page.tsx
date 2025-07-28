@@ -5,17 +5,31 @@ import GameBoard from "@/components/game/GameBoard";
 import { useGameLoop } from "@/hooks/useGameLoop";
 import { useGameLogic } from "@/hooks/useGameLogic";
 import { GAME_CONFIG } from "@/lib/constants";
+import { Direction } from "@/types/game";
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [frameCount, setFrameCount] = useState(0);
 
   // Use game logic hook
-  const { moveSnakeOnTick, getSnake, getScore, getIsGameOver } = useGameLogic();
+  const {
+    moveSnakeOnTick,
+    getSnake,
+    getScore,
+    getIsGameOver,
+    updateSnakeDirection,
+  } = useGameLogic();
 
   const handleCanvasReady = useCallback((canvas: HTMLCanvasElement) => {
     canvasRef.current = canvas;
   }, []);
+
+  const handleDirectionChange = useCallback(
+    (direction: Direction) => {
+      updateSnakeDirection(direction);
+    },
+    [updateSnakeDirection]
+  );
 
   const handleGameTick = useCallback(() => {
     setFrameCount((prev) => prev + 1);
@@ -52,11 +66,15 @@ export default function Home() {
             )}
           </div>
 
-          <GameBoard onCanvasReady={handleCanvasReady} snake={getSnake()} />
+          <GameBoard
+            onCanvasReady={handleCanvasReady}
+            snake={getSnake()}
+            onDirectionChange={handleDirectionChange}
+          />
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-500">
-              Snake is moving automatically to the right
+              Use Arrow Keys or WASD to control the snake
             </p>
             <p className="text-sm text-gray-500">
               Game loop is running at{" "}

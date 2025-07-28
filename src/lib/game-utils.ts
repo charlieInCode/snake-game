@@ -26,6 +26,20 @@ export function isPositionInBounds(
   );
 }
 
+// Check if a direction change is valid (not a 180-degree turn)
+export function isValidDirectionChange(
+  currentDirection: Direction,
+  newDirection: Direction
+): boolean {
+  const isOppositeDirection =
+    (currentDirection === "UP" && newDirection === "DOWN") ||
+    (currentDirection === "DOWN" && newDirection === "UP") ||
+    (currentDirection === "LEFT" && newDirection === "RIGHT") ||
+    (currentDirection === "RIGHT" && newDirection === "LEFT");
+
+  return !isOppositeDirection;
+}
+
 // Create initial snake segments
 export function createInitialSnake(
   gridSize: number,

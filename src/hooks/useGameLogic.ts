@@ -1,7 +1,11 @@
 import { useState, useCallback } from "react";
 import { GameState, Snake, Direction } from "@/types/game";
 import { GAME_CONFIG } from "@/lib/constants";
-import { createInitialSnake, moveSnake } from "@/lib/game-utils";
+import {
+  createInitialSnake,
+  moveSnake,
+  isValidDirectionChange,
+} from "@/lib/game-utils";
 
 // Initial game state
 const createInitialGameState = (): GameState => {
@@ -23,16 +27,9 @@ export function useGameLogic() {
   // Update snake direction
   const updateSnakeDirection = useCallback((newDirection: Direction) => {
     setGameState((prevState) => {
-      // Prevent 180-degree turns
-      const currentDirection = prevState.snake.direction;
-      const isOppositeDirection =
-        (currentDirection === "UP" && newDirection === "DOWN") ||
-        (currentDirection === "DOWN" && newDirection === "UP") ||
-        (currentDirection === "LEFT" && newDirection === "RIGHT") ||
-        (currentDirection === "RIGHT" && newDirection === "LEFT");
-
-      if (isOppositeDirection) {
-        return prevState; // Don't change direction
+      // Use validation utility to check if direction change is valid
+      if (!isValidDirectionChange(prevState.snake.direction, newDirection)) {
+        return prevState; // Don't change direction if invalid
       }
 
       return {
